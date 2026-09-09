@@ -1,6 +1,7 @@
 const express = require("express");
 
 const urlRoutes = require("./routes/url.routes");
+const urlController = require("./controllers/url.controller");
 
 const app = express();
 
@@ -14,5 +15,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/api/urls", urlRoutes);
+
+app.get("/:shortCode", urlController.redirectToOriginalUrl);
 
 module.exports = app;
