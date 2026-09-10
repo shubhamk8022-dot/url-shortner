@@ -1,10 +1,10 @@
 const urlService = require("../services/url.service");
 const validateUrl = require("../utils/validateUrl");
-
+const validateShortCode = require("../utils/validateShortCode");
 const createShortUrl = async (req, res) => {
   try {
     const { originalUrl } = req.body;
-    
+
     const validation = validateUrl(originalUrl);
 
     if (!validation.valid) {
@@ -47,6 +47,12 @@ const createShortUrl = async (req, res) => {
 const redirectToOriginalUrl = async (req, res) => {
   try {
     const { shortCode } = req.params;
+
+    // validate the short code for the right length and format.
+    const validation = validateShortCode(shortCode);
+    if (!validation) {
+      return res.status(400).json({ status: "error", message: "invalid url" });
+    }
 
     const url = await urlService.getUrlByShortCode(shortCode);
 
