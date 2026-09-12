@@ -14,7 +14,7 @@ const createShortUrl = async (req, res) => {
       });
     }
 
-    const userId = 1;
+    const userId = req.user.userId;
 
     const url = await urlService.createShortUrl(userId, validation.value);
 

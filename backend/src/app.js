@@ -2,7 +2,7 @@ const express = require("express");
 
 const urlRoutes = require("./routes/url.routes");
 const urlController = require("./controllers/url.controller");
-
+const authRoutes = require("./routes/auth.routes");
 const app = express();
 
 app.use(express.json());
@@ -17,5 +17,7 @@ app.get("/health", (req, res) => {
 app.use("/api/urls", urlRoutes);
 
 app.get("/:shortCode", urlController.redirectToOriginalUrl);
+
+app.use("/api/auth", authRoutes);
 
 module.exports = app;
