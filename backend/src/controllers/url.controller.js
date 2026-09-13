@@ -1,6 +1,7 @@
 const urlService = require("../services/url.service");
 const validateUrl = require("../utils/validateUrl");
 const validateShortCode = require("../utils/validateShortCode");
+
 const createShortUrl = async (req, res) => {
   try {
     const { originalUrl } = req.body;
@@ -81,7 +82,73 @@ const redirectToOriginalUrl = async (req, res) => {
   }
 };
 
+const getUrlsByUserId = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const page = Number(req.query.page) || 1;
+
+    if (!Number.isInteger(page) || page < 1) {
+      return res.status(400).json({
+        status: "error",
+        message: "Page must be a positive integer",
+      });
+    }
+
+    const result = await urlService.getUrlsByUserId(userId, page);
+
+    return res.status(200).json({
+      status: "success",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Get URLs error:", error);
+
+    return res.status(500).json({
+      status: "error",
+      message: "Failed to load URLs",
+    });
+  }
+};
+
+const getUrlById = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { urlId } = req.params;
+
+    if (!urlId) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "missing field..." });
+    }
+
+    const urlIdNumber = Number(urlId);
+
+    if (!Number.isInteger(urlIdNumber) || urlIdNumber <= 0) {
+      return res.status(400).json({
+        status: "error",
+        message: "urlId must be a positive integer",
+      });
+    }
+
+    const result = await urlService.getUrlById(userId, urlIdNumber);
+    if (!result) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "url not found..." });
+    }
+    return res.status(200).json({ status: "success", data: result });
+  } catch (error) {
+    console.log("Get Url error : ", error);
+    return res
+      .status(500)
+      .json({ status: "error", message: "failed to find url" });
+  }
+};
+
 module.exports = {
   createShortUrl,
   redirectToOriginalUrl,
+  getUrlsByUserId,
+  getUrlById
 };

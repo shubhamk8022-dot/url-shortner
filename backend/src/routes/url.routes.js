@@ -6,6 +6,9 @@ const router = express.Router();
 
 router.post("/",authenticate,urlController.createShortUrl);
 
-// router.post("/register", authController.register);
+
+router.get("/",authenticate,urlController.getUrlsByUserId);
+
+router.get("/:urlId",authenticate,urlController.getUrlById)
 
 module.exports = router;

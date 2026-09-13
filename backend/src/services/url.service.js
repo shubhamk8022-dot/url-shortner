@@ -39,7 +39,30 @@ const getUrlByShortCode = async (shortCode) => {
   return url;
 };
 
+const getUrlsByUserId = async (user_id, page = 1) => {
+  const limit = 10;
+  const offset = limit * page - limit;
+  const urls = await urlRepository.findUrlsByUserId(user_id, limit, offset);
+
+  return urls;
+};
+
+const getUrlById = async (user_id,url_id)=>{
+
+  const url = await urlRepository.findUrlById(user_id,url_id);
+
+  if(!url){
+    return null;
+  }
+
+  return url;
+  
+
+}
+
 module.exports = {
   createShortUrl,
   getUrlByShortCode,
+  getUrlsByUserId,
+  getUrlById
 };

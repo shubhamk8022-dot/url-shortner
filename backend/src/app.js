@@ -20,4 +20,6 @@ app.get("/:shortCode", urlController.redirectToOriginalUrl);
 
 app.use("/api/auth", authRoutes);
 
+
+
 module.exports = app;
