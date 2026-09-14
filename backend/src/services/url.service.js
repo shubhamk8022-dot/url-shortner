@@ -47,22 +47,29 @@ const getUrlsByUserId = async (user_id, page = 1) => {
   return urls;
 };
 
-const getUrlById = async (user_id,url_id)=>{
+const getUrlById = async (user_id, url_id) => {
+  const url = await urlRepository.findUrlById(user_id, url_id);
 
-  const url = await urlRepository.findUrlById(user_id,url_id);
-
-  if(!url){
+  if (!url) {
     return null;
   }
 
   return url;
-  
+};
 
-}
+const updateUrlById = async (user_id, url_id, new_url) => {
+  const existingUrl = await getUrlById(user_id, url_id);
+  if (!existingUrl) {
+    return null;
+  }
+  const result = await urlRepository.updateUrlById(user_id, url_id, new_url);
+  return result;
+};
 
 module.exports = {
   createShortUrl,
   getUrlByShortCode,
   getUrlsByUserId,
-  getUrlById
+  getUrlById,
+  updateUrlById
 };

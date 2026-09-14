@@ -48,26 +48,37 @@ WHERE user_id = ?
 LIMIT ? 
 OFFSET ?;
 `;
-  const rows = await dbConnectionPool.execute(query, [
-    user_id,
-    limit,
-    offset,
-  ]);
+  const rows = await dbConnectionPool.execute(query, [user_id, limit, offset]);
   return rows[0];
 };
 
-const findUrlById = async (user_id,url_id)=>{
-    const query = `SELECT 
+const findUrlById = async (user_id, url_id) => {
+  const query = `SELECT 
                     id, short_code, original_url,created_at,expires_at
                     FROM urls 
                     WHERE user_id = ? and id = ?;`;
-    const rows = await dbConnectionPool.execute(query,[user_id,url_id]);
-    return rows[0] || null;
-}
+  const rows = await dbConnectionPool.execute(query, [user_id, url_id]);
+  return rows[0] || null;
+};
+
+const updateUrlById = async (user_id, url_id, new_url) => {
+  const query = `UPDATE urls
+                    SET original_url = ?
+                    WHERE user_id=? and id=?;`;
+  const result = await dbConnectionPool.execute(query, [
+    new_url,
+    user_id,
+    url_id,
+  ]);
+  return result[0]
+};
+
+
 
 module.exports = {
   createUrl,
   findByShortCode,
   findUrlsByUserId,
-  findUrlById
+  findUrlById,
+  updateUrlById,
 };

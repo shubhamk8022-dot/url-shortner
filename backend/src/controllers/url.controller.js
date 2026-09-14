@@ -146,9 +146,53 @@ const getUrlById = async (req, res) => {
   }
 };
 
+const updateUrlById = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { urlId } = req.params;
+    const { newUrl } = req.body;
+
+    if (!urlId || !newUrl) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "missing field..." });
+    }
+    // validate url ID
+    const urlIdNumber = Number(urlId);
+    if (!Number.isInteger(urlIdNumber) || urlIdNumber <= 0) {
+      return res.status(400).json({
+        status: "error",
+        message: "urlId must be a positive integer",
+      });
+    }
+    // validate the new URL 
+    const validation = validateUrl(newUrl);
+    if (!validation.valid) {
+      return res.status(400).json({
+        status: "error",
+        message: validation.message,
+      });
+    }
+
+    const result = await urlService.updateUrlById(userId, urlIdNumber, validation.value);
+    if (!result) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "url not found...." });
+    }
+    return res
+      .status(200)
+      .json({ status: "success", message: "url updated successfully..." });
+  } catch (error) {
+    console.log("url update error",error);
+    return res.status(500).json({status:"error",message:"falied to update url..."})
+  }
+};
+
 module.exports = {
   createShortUrl,
   redirectToOriginalUrl,
   getUrlsByUserId,
-  getUrlById
+  getUrlById,
+  updateUrlById
 };
