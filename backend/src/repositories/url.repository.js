@@ -74,11 +74,19 @@ const updateUrlById = async (user_id, url_id, new_url) => {
 };
 
 
-
+const deleteUrlById = async (user_id,url_id) => {
+    const query = ` DELETE 
+                    FROM urls
+                    WHERE 
+                    user_id=? AND id=?;`;
+    const result = await dbConnectionPool.execute(query,[user_id,url_id]);
+    return result[0]
+}
 module.exports = {
   createUrl,
   findByShortCode,
   findUrlsByUserId,
   findUrlById,
   updateUrlById,
+  deleteUrlById
 };

@@ -66,10 +66,17 @@ const updateUrlById = async (user_id, url_id, new_url) => {
   return result;
 };
 
+const deleteUrlById = async (user_id,url_id) => {
+    const result = await urlRepository.deleteUrlById(user_id,url_id);
+    return result;
+}
+
+
 module.exports = {
   createShortUrl,
   getUrlByShortCode,
   getUrlsByUserId,
   getUrlById,
-  updateUrlById
+  updateUrlById,
+  deleteUrlById
 };

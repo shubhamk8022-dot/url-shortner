@@ -165,7 +165,7 @@ const updateUrlById = async (req, res) => {
         message: "urlId must be a positive integer",
       });
     }
-    // validate the new URL 
+    // validate the new URL
     const validation = validateUrl(newUrl);
     if (!validation.valid) {
       return res.status(400).json({
@@ -174,7 +174,11 @@ const updateUrlById = async (req, res) => {
       });
     }
 
-    const result = await urlService.updateUrlById(userId, urlIdNumber, validation.value);
+    const result = await urlService.updateUrlById(
+      userId,
+      urlIdNumber,
+      validation.value,
+    );
     if (!result) {
       return res
         .status(404)
@@ -184,8 +188,48 @@ const updateUrlById = async (req, res) => {
       .status(200)
       .json({ status: "success", message: "url updated successfully..." });
   } catch (error) {
-    console.log("url update error",error);
-    return res.status(500).json({status:"error",message:"falied to update url..."})
+    console.log("url update error", error);
+    return res
+      .status(500)
+      .json({ status: "error", message: "falied to update url..." });
+  }
+};
+
+const deleteUrlById = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { urlId } = req.params;
+
+    if (!urlId) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "missing field..." });
+    }
+
+    // validate url ID
+    const urlIdNumber = Number(urlId);
+    if (!Number.isInteger(urlIdNumber) || urlIdNumber <= 0) {
+      return res.status(400).json({
+        status: "error",
+        message: "urlId must be a positive integer",
+      });
+    }
+
+    const result = await urlService.deleteUrlById(userId, urlIdNumber);
+
+    if (result.affectedRows == 0) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "url does not exist....." });
+    }
+    return res
+      .status(200)
+      .json({ status: "success", message: "url deleted successfully...." });
+  } catch (error) {
+    console.log("url deletion error : ", error);
+    return res
+      .status(500)
+      .json({ status: "error", message: "failed to delete URL..." });
   }
 };
 
@@ -194,5 +238,6 @@ module.exports = {
   redirectToOriginalUrl,
   getUrlsByUserId,
   getUrlById,
-  updateUrlById
+  updateUrlById,
+  deleteUrlById
 };

@@ -12,4 +12,6 @@ router.get("/:urlId",authenticate,urlController.getUrlById);
 
 router.patch("/:urlId",authenticate,urlController.updateUrlById);
 
+router.delete("/:urlId",authenticate,urlController.deleteUrlById);
+
 module.exports = router;
