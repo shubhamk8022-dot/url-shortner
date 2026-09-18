@@ -1,10 +1,11 @@
 const express = require("express");
 const authenticate = require("../middlewares/auth.middleware")
 const urlController = require("../controllers/url.controller");
+const userRatelimit = require("../middlewares/userRateLimit.middleware.js");
 
 const router = express.Router();
 
-router.post("/",authenticate,urlController.createShortUrl);
+router.post("/",authenticate,userRatelimit,urlController.createShortUrl);
 
 router.get("/",authenticate,urlController.getUrlsByUserId);
 

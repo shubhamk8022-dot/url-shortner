@@ -3,7 +3,7 @@ const express = require("express");
 const urlRoutes = require("./routes/url.routes");
 const urlController = require("./controllers/url.controller");
 const authRoutes = require("./routes/auth.routes");
-const rateLimitByIp = require("./middlewares/ratelimit.middleware")
+const rateLimitByIp = require("./middlewares/ipRateLimit.middleware")
 const app = express();
 
 app.use(express.json());
