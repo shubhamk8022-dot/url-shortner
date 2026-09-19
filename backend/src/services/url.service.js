@@ -101,12 +101,30 @@ const updateUrlById = async (user_id, url_id, new_url) => {
     if (!existingUrl) {
         return null;
     }
+
     const result = await urlRepository.updateUrlById(user_id, url_id, new_url);
+    if (result.affectedRows !== 0){
+        const shortCode = existingUrl.short_Code;
+        const deletedCacheKey = await redisClient.del(`url:${shortCode}`);
+        deletedCacheKey==1?console.log("url deleted from redis."):console.log("url did not exist in redis.");
+    }
     return result;
 };
 
 const deleteUrlById = async (user_id, url_id) => {
+
+    const url = await getUrlById(user_id, url_id);
+    
+    
     const result = await urlRepository.deleteUrlById(user_id, url_id);
+    
+    // removing the deleted url from redis 
+    if (result.affectedRows !== 0 && url) {
+        const shortCode = url.short_Code;
+        const deletedCacheKey = await redisClient.del(`url:${shortCode}`);
+        deletedCacheKey==1?console.log("url deleted from redis."):console.log("url did not exist in redis.");
+    }
+
     return result;
 };
 
